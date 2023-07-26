@@ -72,7 +72,6 @@ const ControlsWrapper = styled.div`
   grid-template-columns: 1fr 2fr 1fr;
   align-items: center;
   justify-items: center;
-
 `
 
 const PrimaryButton = styled.button`
@@ -106,6 +105,11 @@ const CancelButton = styled.button`
   cursor: pointer;
   background: #fa5757;
   box-shadow: 3px 3px 14px #7b1111, -3px -3px 14px rgba(250, 87, 87, 0.8);
+  transition: all 0.1s ease;
+
+  &:active {
+    box-shadow: 0px 0px 0px 0px #003556, 0px 0px 0px 0px rgba(0, 157, 255, 0.2);
+  }
 `
 
 const ShinyButton = styled.button`
@@ -118,8 +122,13 @@ const ShinyButton = styled.button`
   color: #fff;
   padding: 8px;
   cursor: pointer;
-  background: #fa5757;
-  box-shadow: 3px 3px 14px #7b1111, -3px -3px 14px rgba(250, 87, 87, 0.8);
+  background: radial-gradient(125% 100% at -30% 50%, #faf870 24.48%, #fa5757 89.69%);
+  box-shadow: 5px 5px 14px 0px #6a1818, -5px -5px 14px 0px rgba(251, 238, 110, 0.31);
+  transition: all 0.1s ease;
+
+  &:active {
+    box-shadow: 0px 0px 0px 0px #003556, 0px 0px 0px 0px rgba(0, 157, 255, 0.2);
+  }
 `
 
 const GameField = observer(() => {
@@ -178,7 +187,6 @@ const GameField = observer(() => {
             <CancelButton>Cancel</CancelButton>
             <PrimaryButton onClick={onStartGame}>Start</PrimaryButton>
             <ShinyButton>x2</ShinyButton>
-
           </ControlsWrapper>
         </div>
       </Wrapper>
