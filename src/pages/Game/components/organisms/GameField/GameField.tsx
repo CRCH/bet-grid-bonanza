@@ -9,13 +9,15 @@ import BetCell from '@pages/Game/components/atoms/BetCell/BetCell'
 import Stats from '@pages/Game/components/molecules/Stats/Stats'
 import Button from '@components/atoms/Button/Button'
 
-import { ControlsWrapper, Wrapper } from './GameField.styles'
 import { formatMoney } from '@helpers/formatMoney'
 import { GamePhase } from 'types/index.types'
 import { ConnectionStatus } from '@pages/Game/stores/GameStore.types'
 
+import { ControlsWrapper, Wrapper } from './GameField.styles'
+
 const GameField = observer(() => {
   const bet = 10
+  const isDisabled = GameStore.gamePhase !== GamePhase.BetsOpen
 
   useEffect(() => {
     GameStore.init(5)
@@ -34,8 +36,8 @@ const GameField = observer(() => {
     },
     {
       id: '2',
-      title: 'Current bet:',
-      value: formatMoney(bet),
+      title: 'Total bet:',
+      value: formatMoney(GameStore.totalBet),
     },
     {
       id: '3',
@@ -43,8 +45,6 @@ const GameField = observer(() => {
       value: formatMoney(GameStore.payout),
     },
   ]
-
-  const isDisabled = GameStore.gamePhase !== GamePhase.BetsOpen
 
   if (GameStore.connectionStatus === ConnectionStatus.disconnected) {
     return <Logo />

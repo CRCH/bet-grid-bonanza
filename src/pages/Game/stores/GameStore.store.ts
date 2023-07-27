@@ -19,6 +19,7 @@ class GameStore {
   field: Map<string, FieldCell> = new Map()
   affectedCells: Set<string> = new Set()
   connectionError = false
+  totalBet = 0
 
   init = (fieldSize: FieldSize) => {
     this.websocket = new WebSocket(`wss://hometask.me?field=${fieldSize ** 2}`)
@@ -91,6 +92,7 @@ class GameStore {
       ;[...this.affectedCells].forEach((id) => {
         this.field.set(id, new FieldCell(this, id))
       })
+      this.totalBet = 0
       this.affectedCells.clear()
     }
   }
@@ -150,6 +152,8 @@ class GameStore {
     this.sendMessage(WSClientMessage.placeBet, {
       [target]: amount,
     })
+    this.totalBet += amount
+
     return true
   }
 
