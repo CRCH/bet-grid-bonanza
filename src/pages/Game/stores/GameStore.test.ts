@@ -32,7 +32,7 @@ describe('GameStore', () => {
     ;(global as any).WebSocket = vi.fn().mockImplementation(() => mockWebSocket)
 
     store = new GameStore()
-
+    store.gameSettings.betLimits = { min: 0, max: 100 }
     mockPayload = {
       phase: GamePhase.GameResult,
       balance: 100,
@@ -45,7 +45,6 @@ describe('GameStore', () => {
     store.init(5)
     expect(store.gamePhase).toBe(GamePhase.NotStarted)
     expect(store.balance).toBe(0)
-    expect(store.multipliers).toEqual({})
     expect(store.payout).toBe(0)
     expect(store.websocket).not.toBeNull()
     expect(store.field.size).toEqual(25)

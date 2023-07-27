@@ -4,6 +4,7 @@ import FieldCell from './FieldCellStore.store'
 
 import { ConnectionStatus, FieldSize } from './GameStore.types'
 import { GamePhase, GameResultPayload, ServerMessageType, WSClientMessage, WebSocketMessage } from 'types/index.types'
+import SettingsStore from './SettingsStore.store'
 
 class GameStore {
   constructor() {
@@ -12,14 +13,14 @@ class GameStore {
 
   gamePhase: GamePhase = GamePhase.NotStarted
   balance = 0
-  multipliers: GameResultPayload['multipliers'] = {}
-  payout: GameResultPayload['payout'] = 0
+  totalBet = 0
+  payout = 0
   websocket: WebSocket | null = null
   connectionStatus: ConnectionStatus = ConnectionStatus.disconnected
   field: Map<string, FieldCell> = new Map()
   affectedCells: Set<string> = new Set()
   connectionError = false
-  totalBet = 0
+  gameSettings: SettingsStore = new SettingsStore({ betLimits: { min: 0, max: 0 }, chips: [] })
 
   init = (fieldSize: FieldSize) => {
     this.websocket = new WebSocket(`wss://hometask.me?field=${fieldSize ** 2}`)
@@ -105,6 +106,7 @@ class GameStore {
         console.error('error', message.message)
         break
       case ServerMessageType.settings:
+        this.gameSettings = new SettingsStore(message.payload)
         break
       case ServerMessageType.game:
         if (message.payload.phase === GamePhase.GameResult) {
@@ -145,12 +147,12 @@ class GameStore {
   }
 
   validateBet = (amount: number): boolean => {
-    return amount <= this.balance
+    const nextTotalBet = amount + this.totalBet
+    return amount <= this.balance && this.gameSettings.betLimits.max >= nextTotalBet
   }
 
   placeBet = (target: string, amount = 0.1): boolean => {
     const isValid = this.validateBet(amount)
-
     if (this.gamePhase !== GamePhase.BetsOpen || !isValid) return false
 
     this.updateBalance(this.balance - amount)

@@ -44,7 +44,7 @@ const BetCell = memo(({ id, placeBet, balance, bet, multiplier, getMultipliedBal
   const multiplierDisplay = mult ? <CellMultiplier $isWin={isWin}>x{roundNumber(mult)}</CellMultiplier> : null
 
   return (
-    <CellContainer key={Math.random()} onClick={placeBetCallback}>
+    <CellContainer key={getMultipliedBalance} onClick={placeBetCallback}>
       <CellId>{id}</CellId>
       {balanceDisplay}
       {multiplierDisplay}

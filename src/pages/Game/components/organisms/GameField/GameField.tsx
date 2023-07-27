@@ -7,6 +7,8 @@ import Logo from '@pages/Game/components/atoms/Logo/Logo'
 import Grid from '@pages/Game/components/atoms/Grid'
 import BetCell from '@pages/Game/components/atoms/BetCell/BetCell'
 import Stats from '@pages/Game/components/molecules/Stats/Stats'
+import BetAmountSelect from '@pages/Game/components/molecules/BetAmountSelect/BetAmountSelect'
+import ThreeDotLoader from '@components/atoms/ThreeDotLoader/ThreeDotLoader'
 import Button from '@components/atoms/Button/Button'
 
 import { formatMoney } from '@helpers/formatMoney'
@@ -14,11 +16,11 @@ import { GamePhase } from 'types/index.types'
 import { ConnectionStatus } from '@pages/Game/stores/GameStore.types'
 
 import { ControlsWrapper, Wrapper } from './GameField.styles'
-import ThreeDotLoader from '@components/atoms/ThreeDotLoader/ThreeDotLoader'
 
 const GameField = observer(() => {
-  const bet = 100
+  const bet = GameStore.gameSettings.activeBet
   const isAbleToBet = GameStore.validateBet(bet)
+  const isMinBetPlaced = GameStore.totalBet >= GameStore.gameSettings.betLimits.min
   const isInDisabledPhase = GameStore.gamePhase !== GamePhase.BetsOpen
 
   useEffect(() => {
@@ -72,11 +74,19 @@ const GameField = observer(() => {
           </Grid>
         </Container>
         <Stats stats={stats} />
+        {GameStore.gameSettings !== null ? (
+          <BetAmountSelect
+            chips={GameStore.gameSettings.chips}
+            activeBet={GameStore.gameSettings.activeBet}
+            setActiveBet={GameStore.gameSettings.setActiveBet}
+          />
+        ) : null}
+
         <ControlsWrapper>
           <Button disabled={isInDisabledPhase} appearance="cancel">
             Cancel
           </Button>
-          <Button disabled={isInDisabledPhase} appearance="primary" onClick={onStartGame}>
+          <Button disabled={isInDisabledPhase || !isMinBetPlaced} appearance="primary" onClick={onStartGame}>
             {isInDisabledPhase ? <ThreeDotLoader /> : 'Start'}
           </Button>
           <Button disabled={isInDisabledPhase} appearance="shiny">
