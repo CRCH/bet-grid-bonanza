@@ -14,10 +14,12 @@ import { GamePhase } from 'types/index.types'
 import { ConnectionStatus } from '@pages/Game/stores/GameStore.types'
 
 import { ControlsWrapper, Wrapper } from './GameField.styles'
+import ThreeDotLoader from '@components/atoms/ThreeDotLoader/ThreeDotLoader'
 
 const GameField = observer(() => {
-  const bet = 10
-  const isDisabled = GameStore.gamePhase !== GamePhase.BetsOpen
+  const bet = 100
+  const isAbleToBet = GameStore.validateBet(bet)
+  const isInDisabledPhase = GameStore.gamePhase !== GamePhase.BetsOpen
 
   useEffect(() => {
     GameStore.init(5)
@@ -55,7 +57,7 @@ const GameField = observer(() => {
       <Logo />
       <Wrapper>
         <Container>
-          <Grid size={5} $disabled={isDisabled}>
+          <Grid size={5} $disabled={isInDisabledPhase || !isAbleToBet}>
             {GameStore.fieldArray.map(({ id, getMultipliedBalance, multiplier, balance, placeBet }) => (
               <BetCell
                 key={id}
@@ -71,13 +73,13 @@ const GameField = observer(() => {
         </Container>
         <Stats stats={stats} />
         <ControlsWrapper>
-          <Button disabled={isDisabled} appearance="cancel">
+          <Button disabled={isInDisabledPhase} appearance="cancel">
             Cancel
           </Button>
-          <Button disabled={isDisabled} appearance="primary" onClick={onStartGame}>
-            Start
+          <Button disabled={isInDisabledPhase} appearance="primary" onClick={onStartGame}>
+            {isInDisabledPhase ? <ThreeDotLoader /> : 'Start'}
           </Button>
-          <Button disabled={isDisabled} appearance="shiny">
+          <Button disabled={isInDisabledPhase} appearance="shiny">
             x2
           </Button>
         </ControlsWrapper>

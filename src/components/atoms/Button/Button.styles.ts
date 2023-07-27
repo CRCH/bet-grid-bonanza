@@ -12,7 +12,7 @@ const commonButtonStyles = css`
   transition: all 0.23s ease;
   user-select: none;
 
-  &:active &:not(:disabled) {
+  &:active:enabled {
     box-shadow: 0px 0px 0px 0px #003556, 0px 0px 0px 0px rgba(0, 157, 255, 0.2);
   }
 
@@ -27,10 +27,11 @@ export const ButtonStyles = {
     ${commonButtonStyles}
     padding: 15px;
     width: 140px;
+    min-height: 50px;
     background: radial-gradient(184% 100% at -30% 50%, #74caff 24.48%, #347fad 89.69%);
     box-shadow: 3px 3px 10px 2px #003556, -3px -3px 14px 0px rgba(0, 157, 255, 0.2);
 
-    &:active &:not(:disabled) {
+    &:active:enabled {
       background: radial-gradient(184% 100% at -30% 50%, blue 24.48%, darkblue 89.69%);
       box-shadow: 0px 0px 0px 0px #003556, 0px 0px 0px 0px rgba(0, 157, 255, 0.2);
     }

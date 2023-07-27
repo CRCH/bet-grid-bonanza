@@ -53,13 +53,13 @@ export const CellBalance = styled.div`
   overflow: hidden;
   box-shadow: 1px 2px 2px 1.1px rgba(0, 0, 0, 0.51);
 `
-export const InnerCellBalanceWrapper = styled.div<{ isWin: number }>`
+export const InnerCellBalanceWrapper = styled.div<{ $isWin: number }>`
   position: relative;
   width: 100%;
   height: 100%;
   padding: 2px 0;
   background: radial-gradient(24% 160% at 46% 59%, rgba(255, 255, 255, 0.3) 24.48%, rgba(0, 0, 0, 0) 89.69%);
-  ${({ isWin }) => (isWin ? 'font-size: 2em;' : ``)}
+  ${({ $isWin }) => ($isWin ? 'font-size: 2em;' : ``)}
   & span {
     margin: 0 5px;
   }
@@ -112,8 +112,8 @@ const fadeIfAnimation = keyframes`
   }
 `
 
-export const CellMultiplier = styled.div<{ iswin: number }>`
-  background: ${({ iswin }) => (iswin ? '#00ab84' : '#82001e')};
+export const CellMultiplier = styled.div<{ $isWin: number }>`
+  background: ${({ $isWin }) => ($isWin ? '#00ab84' : '#82001e')};
   border-radius: 7px;
   color: #fff;
   font-size: 1.2em;

@@ -3,7 +3,7 @@ import Styles from './Grid.styles'
 type GridProps = {
   size: number
   children: React.ReactNode
-  $disabled: boolean
+  $disabled?: boolean
 }
 
 const Grid = ({ size, children, $disabled }: GridProps): React.ReactElement => (

@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { CellContainer } from '../BetCell/BetCell.styles'
 
-export const Grid = styled.div<{ size: number; disabled: boolean }>(
+export const Grid = styled.div<{ size: number; disabled?: boolean }>(
   ({ disabled, size }) => `
   display: grid;
   grid-template-columns: repeat(${size}, 1fr);

@@ -144,8 +144,14 @@ class GameStore {
     )
   }
 
+  validateBet = (amount: number): boolean => {
+    return amount <= this.balance
+  }
+
   placeBet = (target: string, amount = 0.1): boolean => {
-    if (this.gamePhase !== GamePhase.BetsOpen) return false
+    const isValid = this.validateBet(amount)
+
+    if (this.gamePhase !== GamePhase.BetsOpen || !isValid) return false
 
     this.updateBalance(this.balance - amount)
     this.affectedCells.add(target)

@@ -6,7 +6,7 @@ interface ButtonProps {
   appearance: ButtonAppearance
   onClick?: () => void
   children: React.ReactNode
-  disabled: boolean
+  disabled?: boolean
 }
 
 const Button = ({ appearance, onClick, children, disabled }: ButtonProps): React.ReactElement => {
