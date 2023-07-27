@@ -8,8 +8,8 @@
   },
   "scripts": {
     "start": "vite",
-    "build": "lint && vite build",
     "lint": "tsc && eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "build": "vite build",
     "preview": "vite preview",
     "test": "vitest --coverage"
   },
@@ -21,6 +21,8 @@
     "styled-components": "^6.0.0-rc.3"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^14.0.0",
     "@types/react": "^18.0.37",
     "@types/react-dom": "^18.0.11",
     "@typescript-eslint/eslint-plugin": "^5.59.0",
@@ -34,6 +36,7 @@
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.3.4",
+    "jsdom": "^22.1.0",
     "prettier": "^2.8.8",
     "typescript": "^5.0.2",
     "vite": "^4.3.9",

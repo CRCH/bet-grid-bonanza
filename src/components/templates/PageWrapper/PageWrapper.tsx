@@ -1,5 +1,8 @@
 import Styled from './PageWrapper.styles'
-import { PageWrapperProps } from './PageWrapper.types'
+
+export interface PageWrapperProps {
+  children: React.ReactNode
+}
 
 const PageWrapper = ({ children }: PageWrapperProps): JSX.Element => <Styled.PageWrapper>{children}</Styled.PageWrapper>
 

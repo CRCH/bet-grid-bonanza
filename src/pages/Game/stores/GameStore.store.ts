@@ -1,35 +1,49 @@
-import { makeAutoObservable, reaction, runInAction } from 'mobx'
+import { makeAutoObservable } from 'mobx'
 
-enum ConnectionStatus {
-  connected = 'connected',
-  disconnected = 'disconnected',
-}
+import FieldCell from './FieldCellStore.store'
+
+import { ConnectionStatus, FieldSize } from './GameStore.types'
+import { GamePhase, GameResultPayload, ServerMessageType, WSClientMessage, WebSocketMessage } from 'types/index.types'
 
 class GameStore {
   constructor() {
     makeAutoObservable(this)
   }
 
-  gamePhase = 'notStarted'
+  gamePhase: GamePhase = GamePhase.NotStarted
   balance = 0
-  multipliers = []
-  payout = 0
+  multipliers: GameResultPayload['multipliers'] = {}
+  payout: GameResultPayload['payout'] = 0
   websocket: WebSocket | null = null
   connectionStatus: ConnectionStatus = ConnectionStatus.disconnected
+  field: Map<string, FieldCell> = new Map()
+  affectedCells: Set<string> = new Set()
 
-  init = () => {
-    if (this.websocket) return this.websocket
-
-    this.websocket = new WebSocket('wss://hometask.me?field=25')
+  init = (fieldSize: FieldSize) => {
+    this.websocket = new WebSocket(`wss://hometask.me?field=${fieldSize ** 2}`)
 
     // Subscribe to WebSocket events
     this.websocket.onopen = this.onOpen
     this.websocket.onmessage = this.onMessage
     this.websocket.onclose = this.onClose
     this.websocket.onerror = this.onError
+
+    this.initField(fieldSize)
   }
 
-  onOpen = (...props: any) => {
+  initField = (fieldSize: FieldSize) => {
+    Array.from({ length: fieldSize }, (_, i) =>
+      Array.from({ length: fieldSize }, (_, j) => `${String.fromCharCode(65 + j)}${i + 1}`)
+    )
+      .flat()
+      .map((id) => this.field.set(id, new FieldCell(this, id)))
+  }
+
+  get fieldArray(): FieldCell[] {
+    return [...this.field.values()]
+  }
+
+  onOpen = (props: Event) => {
     console.log('OnOpen', props)
     this.connectionStatus = ConnectionStatus.connected
     console.log(this.connectionStatus)
@@ -39,43 +53,69 @@ class GameStore {
     this.websocket?.close()
   }
 
-  onError = (...error: any) => {
-    console.error('WebSocket error:', error)
+  onError = (event: Event) => {
+    console.error('WebSocket error:', event)
   }
 
   updateBalance = (newBalance: number) => {
     this.balance = newBalance
   }
 
-  setBetsPhase = (payload: any) => {
+  setBetsPhase = (payload: GameResultPayload) => {
     console.log('setBetsPhase')
     this.updateBalance(payload.balance)
     this.gamePhase = payload.phase
   }
 
-  handleGameResult = (payload: any) => {
+  handleGameResult = (payload: GameResultPayload) => {
     this.updateBalance(payload.balance)
     this.payout = payload.payout
-    this.multipliers.push(payload.multipliers)
+    this.handleMultipliers(payload.multipliers)
+    // this.multipliers.push(payload.multipliers)
   }
 
-  onMessage = (event: MessageEvent) => {
-    console.log('onMessage', event.data)
-    const message = JSON.parse(event.data)
-    if (message.type === 'settings') {
-      return
-    }
-
-    if (message.type === 'game') {
-      if (message.payload.phase === 'GameResult') {
-        this.handleGameResult(message.payload)
+  handleMultipliers = (multipliers: Record<string, number>) => {
+    Object.entries(multipliers).forEach(([key, value]) => {
+      const cell = this.field.get(key)
+      if (cell) {
+        cell.multiplier = value
+        this.affectedCells.add(key)
       }
+    })
+  }
 
-      this.setBetsPhase(message.payload)
+  cleanUp = () => {
+    if (this.affectedCells.size > 0) {
+      ;[...this.affectedCells].forEach((id) => {
+        this.field.set(id, new FieldCell(this, id))
+      })
+      this.affectedCells.clear()
     }
   }
 
-  onClose = (...props: any) => {
+  onMessage = ({ data }: MessageEvent) => {
+    const message: WebSocketMessage = JSON.parse(data)
+
+    switch (message.type) {
+      case ServerMessageType.error:
+        console.error('error', message.message)
+        break
+      case ServerMessageType.settings:
+        break
+      case ServerMessageType.game:
+        if (message.payload.phase === GamePhase.GameResult) {
+          this.handleGameResult(message.payload)
+        }
+        if (message.payload.phase === GamePhase.BetsOpen) {
+          this.cleanUp()
+        }
+        this.updateBalance(message.payload.balance)
+        this.gamePhase = message.payload.phase
+        break
+    }
+  }
+
+  onClose = (props: CloseEvent) => {
     console.log('onClose', props)
     this.connectionStatus = ConnectionStatus.disconnected
   }
@@ -89,30 +129,32 @@ class GameStore {
     }
   }
 
-  sendMessage = (actionType: string, actionData?: any) => {
-    console.log('sent', actionType, actionData)
+  sendMessage = (messageType: WSClientMessage, messageData?: Record<string, number>) => {
+    console.log('sent', messageType, messageData)
 
     this.websocket?.send(
       JSON.stringify({
-        type: actionType,
-        action: actionData,
+        type: messageType,
+        action: messageData,
       })
     )
   }
 
-  placeBet = (target: string, amount = 1) => {
-    if (this.gamePhase !== 'BetsOpen') return
+  placeBet = (target: string, amount = 0.1) => {
+    if (this.gamePhase !== GamePhase.BetsOpen) return
 
-    const data = {
-      [target]: amount,
-    }
     this.updateBalance(this.balance - amount)
-    this.sendMessage('placeBet', data)
+    this.affectedCells.add(target)
+    this.sendMessage(WSClientMessage.placeBet, {
+      [target]: amount,
+    })
   }
 
   startGame = () => {
-    this.sendMessage('startGame')
+    this.sendMessage(WSClientMessage.startGame)
   }
 }
+
+export { GameStore }
 
 export default new GameStore()
