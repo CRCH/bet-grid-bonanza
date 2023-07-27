@@ -6,12 +6,17 @@ interface ButtonProps {
   appearance: ButtonAppearance
   onClick?: () => void
   children: React.ReactNode
+  disabled: boolean
 }
 
-const Button = ({ appearance, onClick, children }: ButtonProps): React.ReactElement => {
+const Button = ({ appearance, onClick, children, disabled }: ButtonProps): React.ReactElement => {
   const ButtonComponent = ButtonStyles[appearance]
 
-  return <ButtonComponent onClick={onClick}>{children}</ButtonComponent>
+  return (
+    <ButtonComponent disabled={disabled} onClick={onClick}>
+      {children}
+    </ButtonComponent>
+  )
 }
 
 export default Button

@@ -9,10 +9,16 @@ const commonButtonStyles = css`
   color: #fff;
   padding: 8px;
   cursor: pointer;
-  transition: all 0.1s ease;
+  transition: all 0.23s ease;
+  user-select: none;
 
-  &:active {
+  &:active &:not(:disabled) {
     box-shadow: 0px 0px 0px 0px #003556, 0px 0px 0px 0px rgba(0, 157, 255, 0.2);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
   }
 `
 
@@ -22,7 +28,12 @@ export const ButtonStyles = {
     padding: 15px;
     width: 140px;
     background: radial-gradient(184% 100% at -30% 50%, #74caff 24.48%, #347fad 89.69%);
-    box-shadow: 3px 3px 14px 0px #003556, -3px -3px 14px 0px rgba(0, 157, 255, 0.2);
+    box-shadow: 3px 3px 10px 2px #003556, -3px -3px 14px 0px rgba(0, 157, 255, 0.2);
+
+    &:active &:not(:disabled) {
+      background: radial-gradient(184% 100% at -30% 50%, blue 24.48%, darkblue 89.69%);
+      box-shadow: 0px 0px 0px 0px #003556, 0px 0px 0px 0px rgba(0, 157, 255, 0.2);
+    }
   `,
   cancel: styled.button`
     ${commonButtonStyles}

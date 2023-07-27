@@ -140,14 +140,15 @@ class GameStore {
     )
   }
 
-  placeBet = (target: string, amount = 0.1) => {
-    if (this.gamePhase !== GamePhase.BetsOpen) return
+  placeBet = (target: string, amount = 0.1): boolean => {
+    if (this.gamePhase !== GamePhase.BetsOpen) return false
 
     this.updateBalance(this.balance - amount)
     this.affectedCells.add(target)
     this.sendMessage(WSClientMessage.placeBet, {
       [target]: amount,
     })
+    return true
   }
 
   startGame = () => {

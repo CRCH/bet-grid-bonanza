@@ -1,16 +1,19 @@
 import { useCallback, useEffect, useState, memo } from 'react'
 
-import { CellContainer, CellId, CellBalance, CellMultiplier } from './BetCell.styles'
+import { CellContainer, CellId, CellBalance, CellMultiplier, InnerCellBalanceWrapper } from './BetCell.styles'
+import { formatMoney } from '@helpers/formatMoney'
+import { roundNumber } from '@helpers/roundNumber'
 
 interface BetCellProps {
   id: string
   placeBet: (bet: number) => void
-  cellBalance: number
+  balance: number
+  getMultipliedBalance: number
   bet: number
   multiplier: number
 }
 
-const BetCell = memo(({ id, placeBet, cellBalance, bet, multiplier }: BetCellProps) => {
+const BetCell = memo(({ id, placeBet, balance, bet, multiplier, getMultipliedBalance }: BetCellProps) => {
   const [mult, setMult] = useState(multiplier)
 
   const placeBetCallback = useCallback(() => {
@@ -19,8 +22,7 @@ const BetCell = memo(({ id, placeBet, cellBalance, bet, multiplier }: BetCellPro
 
   useEffect(() => {
     setMult(multiplier)
-    console.log(cellBalance > 0)
-
+    console.log(balance)
     const timer = setTimeout(() => {
       setMult(0)
     }, 3000)
@@ -28,13 +30,21 @@ const BetCell = memo(({ id, placeBet, cellBalance, bet, multiplier }: BetCellPro
     return () => {
       clearTimeout(timer)
     }
-  }, [multiplier, cellBalance])
+  }, [multiplier, balance])
 
-  const balanceDisplay = cellBalance && !mult ? <CellBalance>{cellBalance}$</CellBalance> : null
-  const multiplierDisplay = mult ? <CellMultiplier win={cellBalance > 0 || null}>x{mult}</CellMultiplier> : null
+  const isWin = mult && balance > 0 ? 1 : 0
+
+  const balanceDisplay = balance ? (
+    <CellBalance>
+      <InnerCellBalanceWrapper isWin={isWin}>
+        <span>{formatMoney(getMultipliedBalance)}</span>
+      </InnerCellBalanceWrapper>
+    </CellBalance>
+  ) : null
+  const multiplierDisplay = mult ? <CellMultiplier iswin={isWin}>x{roundNumber(mult)}</CellMultiplier> : null
 
   return (
-    <CellContainer key={id} onClick={placeBetCallback}>
+    <CellContainer key={Math.random()} onClick={placeBetCallback}>
       <CellId>{id}</CellId>
       {balanceDisplay}
       {multiplierDisplay}
