@@ -18,6 +18,7 @@ class GameStore {
   connectionStatus: ConnectionStatus = ConnectionStatus.disconnected
   field: Map<string, FieldCell> = new Map()
   affectedCells: Set<string> = new Set()
+  connectionError = false
 
   init = (fieldSize: FieldSize) => {
     this.websocket = new WebSocket(`wss://hometask.me?field=${fieldSize ** 2}`)
@@ -55,6 +56,7 @@ class GameStore {
 
   onError = (event: Event) => {
     console.error('WebSocket error:', event)
+    this.connectionError = true
   }
 
   updateBalance = (newBalance: number) => {
