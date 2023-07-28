@@ -18,3 +18,11 @@ different levels:
 
 ## Long story short how i got them: 
 I've built In logic to log the history of multipliers and rank them by payout frequency and multiplier total amount -> script to place 10% of the balance on N top fields
+
+## Controls
+![image](https://github.com/CRCH/bet-grid-bonanza/assets/16330078/bd173ad2-9c7f-4593-b287-681903f0bb21)
+
+C - Clear
+U - Undo
+x2 - Double
+R - Repeat
