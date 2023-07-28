@@ -22,7 +22,7 @@ const BetCell = memo(({ id, placeBet, balance, bet, multiplier, getMultipliedBal
 
   useEffect(() => {
     setMult(multiplier)
-    console.log(balance)
+
     const timer = setTimeout(() => {
       setMult(0)
     }, 3000)

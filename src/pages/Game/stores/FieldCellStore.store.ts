@@ -15,13 +15,11 @@ class FieldCell {
 
   placeBet = (amount: number) => {
     const success = this.gameStore.placeBet(this.id, amount)
-    console.log('success', success)
     if (success) this.balance += amount
   }
 
   get getMultipliedBalance(): number {
     if (this.balance !== 0 && this.multiplier !== 0) {
-      console.log('cell balance', this.balance !== 0 && this.multiplier !== 0)
       return this.balance * this.multiplier
     }
     return this.balance

@@ -27,11 +27,6 @@ describe('BetCell', () => {
     expect(getByText('$20.00')).toBeInTheDocument()
   })
 
-  // test('does not display the cell balance when multiplier is set', () => {
-  //   const { queryByText } = render(<BetCell id="1" placeBet={placeBet} cellBalance={20} bet={bet} multiplier={2} />)
-  //   expect(queryByText('$20.00')).not.toBeInTheDocument()
-  // })
-
   test('displays the correct multiplier', async () => {
     const { getByText } = render(
       <BetCell id="1" placeBet={placeBet} balance={20} bet={bet} multiplier={2} getMultipliedBalance={40} />

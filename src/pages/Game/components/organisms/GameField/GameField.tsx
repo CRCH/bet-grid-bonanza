@@ -16,7 +16,6 @@ import { GameLevels, GamePhase } from 'types/index.types'
 import { ConnectionStatus, FieldSize } from '@pages/Game/stores/GameStore.types'
 
 import { ControlsWrapper, Wrapper } from './GameField.styles'
-import { toJS } from 'mobx'
 
 const getLevel = (level: string): FieldSize => {
   return GameLevels[level as keyof typeof GameLevels] || 5
@@ -40,10 +39,8 @@ const GameField = observer(() => {
     Object.keys(GameStore.previousRoundBets).length === 0 ||
     GameStore.previousRoundTotal > GameStore.balance
 
-  console.log(toJS(GameStore.roundBets), toJS(GameStore.lastRoundBets))
   useEffect(() => {
     GameStore.init(fieldSize)
-    console.log('RUN')
   }, [fieldSize])
 
   const handleClear = () => {

@@ -53,9 +53,7 @@ class GameStore {
   }
 
   onOpen = (props: Event) => {
-    console.log('OnOpen', props)
     this.connectionStatus = ConnectionStatus.connected
-    console.log(this.connectionStatus)
   }
 
   close = () => {
@@ -72,7 +70,6 @@ class GameStore {
   }
 
   setBetsPhase = (payload: GameResultPayload) => {
-    console.log('setBetsPhase')
     this.updateBalance(payload.balance)
     this.gamePhase = payload.phase
   }
@@ -130,7 +127,6 @@ class GameStore {
   }
 
   onClose = (props: CloseEvent) => {
-    console.log('onClose', props)
     this.connectionStatus = ConnectionStatus.disconnected
   }
 
@@ -144,8 +140,6 @@ class GameStore {
   }
 
   sendMessage = (messageType: WSClientMessage, messageData?: Record<string, number>) => {
-    console.log('sent', messageType, messageData)
-
     this.websocket?.send(
       JSON.stringify({
         type: messageType,
@@ -197,8 +191,6 @@ class GameStore {
 
   undoLastBet = () => {
     const lastBet = this.lastRoundBets[this.lastRoundBets.length - 1]
-    console.log('lastBet', toJS(lastBet))
-    console.log('revert', revertBet(lastBet))
     Object.keys(lastBet).forEach((key) => {
       const field = this.field.get(key)
       if (!field) return
