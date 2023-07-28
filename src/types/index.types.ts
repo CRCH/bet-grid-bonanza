@@ -5,6 +5,13 @@ export enum GamePhase {
   NotStarted = 'NotStarted',
 }
 
+export enum GameLevels {
+  'level1' = 5,
+  'level2' = 10,
+  'level3' = 20,
+  'level4' = 25,
+}
+
 export enum ServerMessageType {
   settings = 'settings',
   game = 'game',

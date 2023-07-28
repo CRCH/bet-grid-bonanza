@@ -12,13 +12,20 @@ import ThreeDotLoader from '@components/atoms/ThreeDotLoader/ThreeDotLoader'
 import Button from '@components/atoms/Button/Button'
 
 import { formatMoney } from '@helpers/formatMoney'
-import { GamePhase } from 'types/index.types'
-import { ConnectionStatus } from '@pages/Game/stores/GameStore.types'
+import { GameLevels, GamePhase } from 'types/index.types'
+import { ConnectionStatus, FieldSize } from '@pages/Game/stores/GameStore.types'
 
 import { ControlsWrapper, Wrapper } from './GameField.styles'
 import { toJS } from 'mobx'
 
+const getLevel = (level: string): FieldSize => {
+  return GameLevels[level as keyof typeof GameLevels] || 5
+}
+
 const GameField = observer(() => {
+  const searchParams = new URLSearchParams(document.location.search)
+  const fieldSize = getLevel(searchParams.get('level') || '')
+
   const bet = GameStore.gameSettings.activeBet
   const isAbleToBet = GameStore.validateBet(bet)
   const isMinBetPlaced = GameStore.totalBet >= GameStore.gameSettings.betLimits.min
@@ -35,9 +42,9 @@ const GameField = observer(() => {
 
   console.log(toJS(GameStore.roundBets), toJS(GameStore.lastRoundBets))
   useEffect(() => {
-    GameStore.init(5)
+    GameStore.init(fieldSize)
     console.log('RUN')
-  }, [])
+  }, [fieldSize])
 
   const handleClear = () => {
     GameStore.clearBets()
@@ -86,7 +93,7 @@ const GameField = observer(() => {
       <Logo />
       <Wrapper>
         <Container>
-          <Grid size={5} $disabled={isInDisabledPhase || !isAbleToBet}>
+          <Grid size={fieldSize} $disabled={isInDisabledPhase || !isAbleToBet}>
             {GameStore.fieldArray.map(({ id, getMultipliedBalance, multiplier, balance, placeBet }) => (
               <BetCell
                 key={id}
