@@ -1,3 +1,3 @@
-BetGridBonanza
+# BetGrid bonanza aka HW
 
-onMessage {"type": "error", "message": Game can be start only on BetsOpen phase}
+![image](https://github.com/CRCH/bet-grid-bonanza/assets/16330078/cb37d077-672e-409f-bc30-37cc8f76f88c)
