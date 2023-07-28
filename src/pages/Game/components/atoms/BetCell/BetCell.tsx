@@ -32,7 +32,7 @@ const BetCell = memo(({ id, placeBet, balance, bet, multiplier, getMultipliedBal
     }
   }, [multiplier, balance])
 
-  const isWin = mult && balance > 0 ? 1 : 0
+  const isWin = mult && balance
 
   const balanceDisplay = balance ? (
     <CellBalance>

@@ -11,6 +11,7 @@ const commonButtonStyles = css`
   cursor: pointer;
   transition: all 0.23s ease;
   user-select: none;
+  min-width: 35px;
 
   &:active:enabled {
     box-shadow: 0px 0px 0px 0px #003556, 0px 0px 0px 0px rgba(0, 157, 255, 0.2);
@@ -38,13 +39,11 @@ export const ButtonStyles = {
   `,
   cancel: styled.button`
     ${commonButtonStyles}
-    max-width: 100px;
     background: #fa5757;
     box-shadow: 3px 3px 14px #7b1111, -3px -3px 14px rgba(250, 87, 87, 0.8);
   `,
   shiny: styled.button`
     ${commonButtonStyles}
-    width: 100%;
     background: radial-gradient(125% 100% at -30% 50%, #faf870 24.48%, #fa5757 89.69%);
     box-shadow: 5px 5px 14px 0px #6a1818, -5px -5px 14px 0px rgba(251, 238, 110, 0.31);
   `,

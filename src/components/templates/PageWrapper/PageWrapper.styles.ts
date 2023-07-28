@@ -2,7 +2,6 @@ import styled, { keyframes } from 'styled-components'
 
 export const PageWrapper = styled.div`
   margin: auto;
-  max-width: 1024px;
 `
 const pulse = keyframes`
   0% {

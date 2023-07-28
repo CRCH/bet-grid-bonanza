@@ -16,6 +16,7 @@ import { GamePhase } from 'types/index.types'
 import { ConnectionStatus } from '@pages/Game/stores/GameStore.types'
 
 import { ControlsWrapper, Wrapper } from './GameField.styles'
+import { toJS } from 'mobx'
 
 const GameField = observer(() => {
   const bet = GameStore.gameSettings.activeBet
@@ -23,13 +24,39 @@ const GameField = observer(() => {
   const isMinBetPlaced = GameStore.totalBet >= GameStore.gameSettings.betLimits.min
   const isInDisabledPhase = GameStore.gamePhase !== GamePhase.BetsOpen
 
+  const isDisabledClear = isInDisabledPhase || !isMinBetPlaced
+  const isDisabledUndo = isInDisabledPhase || GameStore.lastRoundBets.length === 0
+  const isDisabledStart = isInDisabledPhase || !isMinBetPlaced
+  const isDisabledDouble = isInDisabledPhase || !isMinBetPlaced || !GameStore.validateBet(GameStore.totalBet)
+  const isDisabledRepeat =
+    isInDisabledPhase ||
+    Object.keys(GameStore.previousRoundBets).length === 0 ||
+    GameStore.previousRoundTotal > GameStore.balance
+
+  console.log(toJS(GameStore.roundBets), toJS(GameStore.lastRoundBets))
   useEffect(() => {
     GameStore.init(5)
     console.log('RUN')
   }, [])
 
-  const onStartGame = () => {
+  const handleClear = () => {
+    GameStore.clearBets()
+  }
+
+  const handleUndo = () => {
+    GameStore.undoLastBet()
+  }
+
+  const handleStartGame = () => {
     GameStore.startGame()
+  }
+
+  const handleDouble = () => {
+    GameStore.doubleBets()
+  }
+
+  const handleRepeat = () => {
+    GameStore.repeatBets()
   }
 
   const stats = [
@@ -83,14 +110,20 @@ const GameField = observer(() => {
         ) : null}
 
         <ControlsWrapper>
-          <Button disabled={isInDisabledPhase} appearance="cancel">
-            Cancel
+          <Button disabled={isDisabledClear} appearance="cancel" onClick={handleClear}>
+            C
           </Button>
-          <Button disabled={isInDisabledPhase || !isMinBetPlaced} appearance="primary" onClick={onStartGame}>
+          <Button disabled={isDisabledUndo} appearance="shiny" onClick={handleUndo}>
+            U
+          </Button>
+          <Button disabled={isDisabledStart} appearance="primary" onClick={handleStartGame}>
             {isInDisabledPhase ? <ThreeDotLoader /> : 'Start'}
           </Button>
-          <Button disabled={isInDisabledPhase} appearance="shiny">
+          <Button disabled={isDisabledDouble} onClick={handleDouble} appearance="shiny">
             x2
+          </Button>
+          <Button disabled={isDisabledRepeat} onClick={handleRepeat} appearance="shiny">
+            R
           </Button>
         </ControlsWrapper>
       </Wrapper>
