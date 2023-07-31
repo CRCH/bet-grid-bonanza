@@ -1,14 +1,18 @@
 import { vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
+
 import BetAmountSelect from './BetAmountSelect'
+
+import GameStore from '@pages/Game/stores/GameStore.store'
 
 describe('BetAmountSelect', () => {
   const mockSetActiveBet = vi.fn()
   const chips = [0.1, 1, 5, 10, 50, 100]
-  const activeBet = 5
 
   beforeEach(() => {
-    render(<BetAmountSelect chips={chips} setActiveBet={mockSetActiveBet} activeBet={activeBet} />)
+    GameStore.gameSettings.chips = chips
+    GameStore.gameSettings.setActiveBet = mockSetActiveBet
+    render(<BetAmountSelect />)
   })
 
   it('renders the correct number of chips', () => {

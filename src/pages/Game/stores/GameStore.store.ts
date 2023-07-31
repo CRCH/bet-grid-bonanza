@@ -226,7 +226,7 @@ class GameStore {
     this.sendMessage(WSClientMessage.placeBet, this.previousRoundBets)
     this.lastRoundBets.push({ ...this.previousRoundBets })
     this.updateBalance(this.balance - this.previousRoundTotal)
-    this.totalBet = this.previousRoundTotal
+    this.totalBet += this.previousRoundTotal
     Object.keys(this.previousRoundBets).forEach((key) => {
       const field = this.field.get(key)
       if (!field) return

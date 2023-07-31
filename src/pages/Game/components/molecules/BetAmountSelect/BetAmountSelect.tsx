@@ -1,19 +1,19 @@
+import { observer } from 'mobx-react-lite'
+
 import Container from '@components/atoms/Container'
 
+import GameStore from '@pages/Game/stores/GameStore.store'
+
 import { BetAmountWrapper, Chip, ChipsWrapper, Title } from './BetAmountSelect.styles'
-import { SettingsPayload } from 'types/index.types'
 
-type BetAmountSelectProps = {
-  chips: SettingsPayload['chips']
-  setActiveBet: (bet: number) => void
-  activeBet: number
-}
 
-const BetAmountSelect = ({ chips, setActiveBet, activeBet }: BetAmountSelectProps): React.ReactNode => {
+const BetAmountSelect = observer((): React.ReactNode => {
+  const activeBet = GameStore.gameSettings.activeBet
   const handleChipClick = (chip: number) => () => {
     if (chip === activeBet) return
-    setActiveBet(chip)
+    GameStore.gameSettings.setActiveBet(chip)
   }
+  const chips = GameStore.gameSettings.chips
 
   return (
     <BetAmountWrapper>
@@ -29,6 +29,6 @@ const BetAmountSelect = ({ chips, setActiveBet, activeBet }: BetAmountSelectProp
       </Container>
     </BetAmountWrapper>
   )
-}
+})
 
 export default BetAmountSelect

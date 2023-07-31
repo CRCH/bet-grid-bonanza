@@ -1,24 +1,27 @@
-import { useCallback, useEffect, useState, memo } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import { observer } from 'mobx-react-lite'
 
-import { CellContainer, CellId, CellBalance, CellMultiplier, InnerCellBalanceWrapper } from './BetCell.styles'
 import { formatMoney } from '@helpers/formatMoney'
 import { roundNumber } from '@helpers/roundNumber'
+
+import GameStore from '@pages/Game/stores/GameStore.store'
+
+import { CellContainer, CellId, CellBalance, CellMultiplier, InnerCellBalanceWrapper } from './BetCell.styles'
 
 interface BetCellProps {
   id: string
   placeBet: (bet: number) => void
   balance: number
   getMultipliedBalance: number
-  bet: number
   multiplier: number
 }
 
-const BetCell = memo(({ id, placeBet, balance, bet, multiplier, getMultipliedBalance }: BetCellProps) => {
+const BetCell = observer(({ id, placeBet, balance, multiplier, getMultipliedBalance }: BetCellProps) => {
   const [mult, setMult] = useState(multiplier)
 
   const placeBetCallback = useCallback(() => {
-    placeBet(bet)
-  }, [placeBet, bet])
+    placeBet(GameStore.gameSettings.activeBet)
+  }, [placeBet])
 
   useEffect(() => {
     setMult(multiplier)
